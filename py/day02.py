@@ -35,6 +35,6 @@ def part2(lines):
 
 
 with open("../input/day02.input") as f:
-    lines = [x for x in f.readlines()]
+    lines = [x.strip() for x in f.readlines()]
     print("part1:", part1(lines))
     print("part2:", part2(lines))
