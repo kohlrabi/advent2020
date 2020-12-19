@@ -34,7 +34,7 @@ class Passport:
             if not (2020 <= int(p.eyr) <= 2030):
                 return False
 
-            m = re.match(r'^([0-9]+)([a-z]{2})$', p.hgt)
+            m = re.match(r'^([0-9]+)(cm|in)$', p.hgt)
             if m:
                 if m.group(2) == 'cm':
                     if not(150 <= int(m.group(1)) <= 193):
@@ -42,8 +42,6 @@ class Passport:
                 elif m.group(2) == 'in':
                     if not(59 <= int(m.group(1)) <= 76):
                         return False
-                else:
-                    return False
             else:
                 return False
 
