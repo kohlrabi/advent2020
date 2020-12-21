@@ -16,8 +16,10 @@ def part2(lines):
                 if first + second + third == 2020:
                     return first * second * third
 
+import os, sys
 
-with open("../input/day01.input") as f:
+pwd = os.path.dirname(sys.argv[0])
+with open(os.path.join(pwd, "../input/day01.input")) as f:
     lines = [x.strip() for x in f.readlines()]
     print("part1:", part1(lines))
     print("part2:", part2(lines))

@@ -26,7 +26,10 @@ def part2(lines):
     return answers
 
 
-with open("../input/day06.input") as f:
+import os, sys
+
+pwd = os.path.dirname(sys.argv[0])
+with open(os.path.join(pwd, "../input/day06.input")) as f:
     lines = [x.strip() for x in f.readlines()]
     print("part1:", part1(lines))
     print("part2:", part2(lines))
