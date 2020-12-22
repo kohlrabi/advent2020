@@ -2,10 +2,20 @@
 
 class HandheldCode:
 
-
     def __init__(self, code, acc=0):
         self.code = code
+        self.maxpos = len(self.code)
         self.acc = acc
+        self.pos = 0
+
+    def op_at(self, i):
+        return self.code[i][0]
+
+    def change_op(self, i, op):
+        self.code[i] = (op, self.code[i][1])
+
+    def reset(self):
+        self.acc = 0
         self.pos = 0
 
     def op_acc(self, val):
@@ -20,6 +30,8 @@ class HandheldCode:
 
     def run(self, fun=None):
         while True:
+            if self.pos == self.maxpos:
+                break
             instr, val = self.code[self.pos]
             HandheldCode.ops[instr](self, val)
             if fun:
@@ -47,29 +59,48 @@ class HandheldCode:
         'nop': op_nop,
     }
 
+    def copy(self):
+        return HandheldCode(self.code.copy())
+
+class StopDouble:
+    def __init__(self):
+        self.visited = set()
+        self.broken = False
+
+    def add_visit(self, handheld):
+        p = handheld.pos
+        if p in self.visited:
+            self.broken = True
+            return True
+        self.visited.add(p)
+
+    def __call__(self, handheld):
+        return self.add_visit(handheld)
+
+    def reset(self):
+        self.visited = set()
+        self.broken = False
+
 
 def part1(lines):
-    
-    class StopDouble:
-        def __init__(self):
-            self.visited = set()
-
-        def add_visit(self, handheld):
-            p = handheld.pos
-            if p in self.visited:
-                return True
-            self.visited.add(p)
-
-        def __call__(self, handheld):
-            return self.add_visit(handheld)
-
     handheld = HandheldCode.parse_code(lines)
     handheld.run(StopDouble())
     return handheld.acc
 
 def part2(lines):
-    return None
-
+    handheld = HandheldCode.parse_code(lines)
+    orig = handheld.copy()
+    sd = StopDouble()
+    for i in range(len(handheld.code)):
+        if handheld.op_at(i) == 'nop':
+            handheld.change_op(i, 'jmp')
+        elif handheld.op_at(i) == 'jmp':
+            handheld.change_op(i, 'nop')
+        sd.reset()  
+        handheld.run(sd)
+        if sd.broken == False:
+            return(handheld.acc)
+        handheld = orig.copy()
 
 import os, sys
 
