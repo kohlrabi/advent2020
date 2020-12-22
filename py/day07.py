@@ -18,6 +18,11 @@ class Bag:
             fun(p)
             p.visit_all_parents(fun)
 
+    def visit_all_children(self, fun):
+        for k, v in self.children.items():
+            fun(k, v)
+            k.visit_all_children(fun)
+
     def __repr__(self):
         return f'Bag: {self.name}'
 
@@ -47,7 +52,6 @@ def collect_bags(lines):
 def part1(lines):
     target = 'shiny gold'
     bags = collect_bags(lines)
-    print(bags[target].children)
 
     class CountParents:
         def __init__(self):
@@ -65,8 +69,16 @@ def part1(lines):
 
 
 def part2(lines):
-    return
+    target = 'shiny gold'
+    bags = collect_bags(lines)
 
+    def count_total(target):
+        total = 0
+        for k, v in target.children.items():
+            total += v * count_total(k) + v 
+        return total
+
+    return count_total(bags[target])   
 
 import os, sys
 
